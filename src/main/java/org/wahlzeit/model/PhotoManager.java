@@ -216,7 +216,9 @@ public class PhotoManager extends ObjectManager {
 
 		return result;
 	}
-	
+
+	//TODO: If necessary add findPhotosByLocation(String locationName)
+
 	/**
 	 * 
 	 */

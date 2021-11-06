@@ -118,6 +118,9 @@ public abstract class ModelMain extends AbstractMain {
 			int lastSessionId = result.getInt("last_session_id");
 			AbstractServlet.setLastSessionId(lastSessionId);		
 			SysLog.logSysInfo("loaded global variable lastSessionId: " + lastSessionId);
+			int lastLocationId = result.getInt("last_location_id");
+			LocationId.setCurrentIdFromInt(lastLocationId);
+			SysLog.logSysInfo("loaded global variable lastLocationId:" + lastLocationId);
 		} else {
 			SysLog.logSysError("Could not load globals!");
 		}
@@ -150,6 +153,9 @@ public abstract class ModelMain extends AbstractMain {
 			int lastSessionId = AbstractServlet.getLastSessionId();
 			rset.updateInt("last_session_id", lastSessionId);
 			SysLog.logSysInfo("saved global variable lastSessionId: " + lastSessionId);
+			int lastLocationId = LocationId.getCurrentIdAsInt();
+			rset.updateInt("last_location_id", lastLocationId);
+			SysLog.logSysInfo("saved global variable lastLocationId: " + lastLocationId);
 			rset.updateRow();
 		} else {
 			SysLog.logSysError("Could not save globals!");

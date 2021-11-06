@@ -154,6 +154,9 @@ public class Photo extends DataObject {
 		creationTime = rset.getLong("creation_time");
 
 		maxPhotoSize = PhotoSize.getFromWidthHeight(width, height);
+
+		//Getting the location by retrieving the location with the id saved in the database.
+		location = LocationManager.getLocation(LocationId.getIdFromInt(rset.getInt("location")));
 	}
 	
 	/**
@@ -173,7 +176,14 @@ public class Photo extends DataObject {
 		rset.updateInt("status", status.asInt());
 		rset.updateInt("praise_sum", praiseSum);
 		rset.updateInt("no_votes", noVotes);
-		rset.updateLong("creation_time", creationTime);		
+		rset.updateLong("creation_time", creationTime);
+		if(location!=null){
+			//Saving the location of the photo
+			//By calling the saving of the location here, the functions to save photos did not need to be adapted.
+			LocationManager.getInstance().saveLocation(location);
+			//The id of the location will be added to the database for association.
+			rset.updateInt("location", location.getId().asInt());
+		}
 	}
 
 	/**
@@ -482,14 +492,4 @@ public class Photo extends DataObject {
 		location = loc;
 		incWriteCount();
 	}
-
-	/**
-	 *
-	 * @methodtype get
-	 */
-	public void setLocation(double x, double y, double z){
-		location = new Location(x, y, z);
-		incWriteCount();
-	}
-	
 }

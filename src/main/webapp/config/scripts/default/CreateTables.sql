@@ -15,6 +15,16 @@ CREATE TABLE users (
 	creation_time bigint
 );
 
+--Using an id as it is easier for association and using name and the coordinates as primary key.
+--Also the coordinate is saved here as it currently does not neccessitate its own table.
+CREATE TABLE locations(
+    id integer PRIMARY KEY,
+    name text,
+    x_coordinate double precision,
+    y_coordinate double precision,
+    z_coordinate double precision
+);
+
 CREATE TABLE photos (
 	id integer PRIMARY KEY,
 	owner_id integer REFERENCES users(id),
@@ -29,7 +39,8 @@ CREATE TABLE photos (
 	status integer,
 	praise_sum integer,
 	no_votes integer,
-	creation_time bigint
+	creation_time bigint,
+	location integer REFERENCES locations(id)
 );
 
 CREATE TABLE tags (
@@ -53,7 +64,8 @@ CREATE TABLE globals (
 	last_user_id integer,
 	last_photo_id integer,
 	last_case_id integer,
-	last_session_id integer
+	last_session_id integer,
+	last_location_id integer
 );
 
 INSERT INTO globals (id, last_user_id, last_photo_id, last_case_id, last_session_id)

@@ -32,6 +32,8 @@ dependencies {
 
 test {
     filter {
+    	//These Tests need the database running, as such they are excluded from the normal tests.  
+        excludeTestsMatching "*.PersistenceTest*"
         includeTestsMatching "org.wahlzeit.*"
     }
     testLogging {
@@ -46,3 +48,40 @@ test {
             }
         }
 }
+
+//Separate task for running the tests needing the database running.
+task persistenceTest(type: Test) {
+    filter {
+        includeTestsMatching "*PersistenceTest*"
+    }
+    testLogging {
+            events "passed", "skipped", "failed"
+
+            afterSuite { desc, result ->
+                if (!desc.parent) {
+                    println "Tests run: ${result.testCount}, " +
+                            "Failures: ${result.failedTestCount}, " +
+                            "Skipped: ${result.skippedTestCount}"
+                }
+            }
+        }
+}
+
+//Separate task for running all tests.
+task fullTest(type: Test) {
+    filter {
+        includeTestsMatching "org.wahlzeit.*"
+    }
+    testLogging {
+            events "passed", "skipped", "failed"
+
+            afterSuite { desc, result ->
+                if (!desc.parent) {
+                    println "Tests run: ${result.testCount}, " +
+                            "Failures: ${result.failedTestCount}, " +
+                            "Skipped: ${result.skippedTestCount}"
+                }
+            }
+        }
+}
+
