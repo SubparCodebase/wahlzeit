@@ -50,7 +50,7 @@ public class ShowUserPhotoFormHandler extends AbstractWebFormHandler {
 	 */
 	protected boolean isWellFormedPost(UserSession us, Map args) {
 		String id = us.getAsString(args, Photo.ID);
-		Photo photo = PhotoManager.getPhoto(id);
+		Photo photo = CatPhotoManager.getPhoto(id);
 		return (photo != null) && us.isPhotoOwner(photo);
 	}
 	
@@ -61,7 +61,7 @@ public class ShowUserPhotoFormHandler extends AbstractWebFormHandler {
 		String result = PartUtil.SHOW_USER_HOME_PAGE_NAME;
 		
 		String id = us.getAndSaveAsString(args, Photo.ID);
-		Photo photo = PhotoManager.getPhoto(id);
+		Photo photo = CatPhotoManager.getPhoto(id);
 
 		UserManager userManager = UserManager.getInstance();
 		User user = userManager.getUserByName(photo.getOwnerName());
@@ -77,7 +77,7 @@ public class ShowUserPhotoFormHandler extends AbstractWebFormHandler {
 			UserLog.logPerformedAction("SelectUserPhoto");
 		} else if (us.isFormType(args, "delete")) {
 			photo.setStatus(photo.getStatus().asDeleted(true));
-			PhotoManager.getInstance().savePhoto(photo);
+			CatPhotoManager.getInstance().savePhoto(photo);
 			if (user.getUserPhoto() == photo) {
 				user.setUserPhoto(null);
 			}

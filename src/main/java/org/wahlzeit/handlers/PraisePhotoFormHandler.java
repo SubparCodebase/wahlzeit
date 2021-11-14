@@ -12,7 +12,7 @@ import org.wahlzeit.agents.AgentManager;
 import org.wahlzeit.agents.NotifyAboutPraiseAgent;
 import org.wahlzeit.model.AccessRights;
 import org.wahlzeit.model.Photo;
-import org.wahlzeit.model.PhotoManager;
+import org.wahlzeit.model.CatPhotoManager;
 import org.wahlzeit.model.UserLog;
 import org.wahlzeit.model.UserSession;
 import org.wahlzeit.utils.StringUtil;
@@ -48,7 +48,7 @@ public class PraisePhotoFormHandler extends AbstractWebFormHandler {
 	 */
 	protected boolean isWellFormedPost(UserSession us, Map args) {
 		String photoId = us.getAsString(args, Photo.ID);
-		Photo photo = PhotoManager.getPhoto(photoId);
+		Photo photo = CatPhotoManager.getPhoto(photoId);
 		return photo != null;
 	}
 	
@@ -57,7 +57,7 @@ public class PraisePhotoFormHandler extends AbstractWebFormHandler {
 	 */
 	protected String doHandlePost(UserSession us, Map args) {
 		String photoId = us.getAsString(args, Photo.ID);
-		Photo photo = PhotoManager.getPhoto(photoId);
+		Photo photo = CatPhotoManager.getPhoto(photoId);
 		String praise = us.getAsString(args, Photo.PRAISE);
 
 		boolean wasPraised = false;

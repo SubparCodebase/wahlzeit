@@ -65,7 +65,7 @@ public class PhotoCase extends Case {
 	 */
 	public void readFrom(ResultSet rset) throws SQLException {
 		id = new CaseId(rset.getInt("id"));
-		photo = PhotoManager.getPhoto(PhotoId.getIdFromInt(rset.getInt("photo")));
+		photo = CatPhotoManager.getPhoto(PhotoId.getIdFromInt(rset.getInt("photo")));
 		createdOn = rset.getLong("creation_time");
 		
 		flagger = rset.getString("flagger");

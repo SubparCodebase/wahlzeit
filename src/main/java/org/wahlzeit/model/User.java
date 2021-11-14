@@ -201,8 +201,8 @@ public class User extends Client implements Persistent {
 		gender = Gender.getFromInt(rset.getInt("gender"));
 		status = UserStatus.getFromInt(rset.getInt("status"));
 		confirmationCode = rset.getLong("confirmation_code");
-		photos = PhotoManager.getInstance().findPhotosByOwner(name);
-		userPhoto = PhotoManager.getPhoto(PhotoId.getIdFromInt(rset.getInt("photo")));
+		photos = CatPhotoManager.getInstance().findPhotosByOwner(name);
+		userPhoto = CatPhotoManager.getPhoto(PhotoId.getIdFromInt(rset.getInt("photo")));
 		creationTime = rset.getLong("creation_time");
 	}
 	

@@ -40,7 +40,8 @@ CREATE TABLE photos (
 	praise_sum integer,
 	no_votes integer,
 	creation_time bigint,
-	location integer REFERENCES locations(id)
+	location integer REFERENCES locations(id),
+	cat_count integer
 );
 
 CREATE TABLE tags (

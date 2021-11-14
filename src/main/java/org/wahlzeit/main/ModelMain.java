@@ -77,7 +77,7 @@ public abstract class ModelMain extends AbstractMain {
 		User user = new User(userName, password, emailAddress, confirmationCode);
 		userManager.addUser(user);
 		
-		PhotoManager photoManager = PhotoManager.getInstance();
+		PhotoManager photoManager = CatPhotoManager.getInstance();
 		File photoDirFile = new File(photoDir);
 		FileFilter photoFileFilter = new FileFilter() {
 			public boolean accept(File file) {
@@ -169,7 +169,7 @@ public abstract class ModelMain extends AbstractMain {
 	 */
 	public void saveAll() throws SQLException {
 		PhotoCaseManager.getInstance().savePhotoCases();
-		PhotoManager.getInstance().savePhotos();			
+		CatPhotoManager.getInstance().savePhotos();
 		UserManager.getInstance().saveUsers();
 
 		saveGlobals();

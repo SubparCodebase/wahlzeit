@@ -60,7 +60,7 @@ public class SendEmailFormHandler extends AbstractWebFormHandler {
 		
 		String id = us.getAndSaveAsString(args, Photo.ID);
 		part.addString(Photo.ID, id);
-		Photo photo = PhotoManager.getPhoto(id);
+		Photo photo = CatPhotoManager.getPhoto(id);
 		part.addString(Photo.THUMB, getPhotoThumb(us, photo));
 
 		part.maskAndAddString(USER, photo.getOwnerName());
@@ -76,7 +76,7 @@ public class SendEmailFormHandler extends AbstractWebFormHandler {
 	 * 
 	 */
 	protected boolean isWellFormedPost(UserSession us, Map args) {
-		return PhotoManager.getPhoto(us.getAsString(args, Photo.ID)) != null;
+		return CatPhotoManager.getPhoto(us.getAsString(args, Photo.ID)) != null;
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class SendEmailFormHandler extends AbstractWebFormHandler {
 	 */
 	protected String doHandlePost(UserSession us, Map args) {
 		String id = us.getAndSaveAsString(args, Photo.ID);
-		Photo photo = PhotoManager.getPhoto(id);
+		Photo photo = CatPhotoManager.getPhoto(id);
 
 		String emailSubject = us.getAndSaveAsString(args, EMAIL_SUBJECT);
 		String emailBody = us.getAndSaveAsString(args, EMAIL_BODY);

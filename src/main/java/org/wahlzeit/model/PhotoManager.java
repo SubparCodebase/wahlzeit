@@ -35,7 +35,8 @@ public class PhotoManager extends ObjectManager {
 	/**
 	 * 
 	 */
-	public static final PhotoManager getInstance() {
+	//Removed final to enable overriding in CatPhotoManager
+	public static PhotoManager getInstance() {
 		return instance;
 	}
 	

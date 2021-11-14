@@ -66,10 +66,10 @@ public class PersistenceTest {
     //Inserts a photo in the database, then clears the manager cache to check if the photo can be retrieved from the database.
     @Test
     public void insertImageTest() throws Exception {
-        PhotoManager pm = PhotoManager.getInstance();
+        CatPhotoManager pm = CatPhotoManager.getInstance();
         String pathname = System.getProperty("user.dir");
         File f = new File(pathname + "/src/testData/TESTPIC1.jpg"); //Get test picture
-        Photo p = pm.createPhoto(f); //Create Photo from picture
+        CatPhoto p = pm.createPhoto(f); //Create Photo from picture
 
         //Add data
         p.setOwnerName("TEST NAME");
@@ -78,23 +78,25 @@ public class PersistenceTest {
         p.setTags(new Tags("testTag"));
         p.setOwnerId(1);
         p.setOwnerEmailAddress(EmailAddress.getFromString("testname@default.net"));
+        p.setCatCount(5);
 
         pm.savePhoto(p); //Photo should be in the database now
         PhotoId testPhotoId = p.getId();
-        pm.photoCache.clear(); //This prevents getPhotoFromId() to just take the photo from the cache without accessing the database.
-        Photo photo = pm.getPhotoFromId(testPhotoId); //Photo should now be read from the database.
+        //pm.photoCache.clear(); //This prevents getPhotoFromId() to just take the photo from the cache without accessing the database.
+        CatPhoto photo = pm.getPhotoFromId(testPhotoId); //Photo should now be read from the database.
 
         //Check if read photo data matches (just one check should suffice)
         assertEquals(photo.getOwnerName(), "TEST NAME");
+        assertEquals(photo.getCatCount(), p.getCatCount());
     }
 
     //Inserts a photo with associated location in the database, then clears the manager caches to check if the photo and location can be retrieved from the database.
     @Test
     public void insertImageWithLocationTest() throws Exception {
-        PhotoManager pm = PhotoManager.getInstance();
+        CatPhotoManager pm = CatPhotoManager.getInstance();
         String pathname = System.getProperty("user.dir");
         File f = new File(pathname + "/src/testData/TESTPIC2.jpg"); //Get test picture
-        Photo p = pm.createPhoto(f); //Create Photo from picture
+        CatPhoto p = pm.createPhoto(f); //Create Photo from picture
 
         //Add data
         p.setOwnerName("LOCATION OWNER");
@@ -103,6 +105,7 @@ public class PersistenceTest {
         p.setTags(new Tags("earths_core"));
         p.setOwnerId(1);
         p.setOwnerEmailAddress(EmailAddress.getFromString("owner@earths-core.com"));
+        p.setCatCount(5);
 
         //Create and add location
         LocationManager lm = LocationManager.getInstance();
@@ -116,12 +119,13 @@ public class PersistenceTest {
         pm.photoCache.clear();
         lm.locationCache.clear();
 
-        Photo photo = pm.getPhotoFromId(testPhotoId); //Photo with location should now be read from the database.
+        CatPhoto photo = pm.getPhotoFromId(testPhotoId); //Photo with location should now be read from the database.
 
         //Check read photo and location
         assertEquals(photo.getOwnerName(), "LOCATION OWNER");
         assertTrue(photo.getLocation().isEqual(l));
         assertEquals(photo.getLocation().getId(), l.getId());
+        assertEquals(photo.getCatCount(), p.getCatCount());
     }
 
     //Inserts a photo with associated already in the database existing location in the database,
@@ -129,16 +133,17 @@ public class PersistenceTest {
     @Test
     public void insertImageWithExistingLocationTest() throws Exception {
         //Everything as in insertImageWithLocationTest
-        PhotoManager pm = PhotoManager.getInstance();
+        CatPhotoManager pm = CatPhotoManager.getInstance();
         String pathname = System.getProperty("user.dir");
         File f = new File(pathname + "/src/testData/TESTPIC3.jpg");
-        Photo p = pm.createPhoto(f);
+        CatPhoto p = pm.createPhoto(f);
         p.setOwnerName("LOCATION OWNER-IN-CHIEF");
         p.setOwnerLanguage(Language.GERMAN);
         p.setOwnerHomePage(new URL("https:\\\\www.earths-core.com"));
         p.setTags(new Tags("earths_core"));
         p.setOwnerId(1);
         p.setOwnerEmailAddress(EmailAddress.getFromString("owner-in-chief@earths-core.com"));
+        p.setCatCount(5);
 
         //Add last added location to the photo (will be the location from insertImageWithLocationTest)
         LocationManager lm = LocationManager.getInstance();
@@ -152,12 +157,71 @@ public class PersistenceTest {
         pm.photoCache.clear();
         lm.locationCache.clear();
 
-        Photo photo = pm.getPhotoFromId(testPhotoId); //Photo with location should now be read from the database.
+        CatPhoto photo = pm.getPhotoFromId(testPhotoId); //Photo with location should now be read from the database.
 
         //Check read photo and location
         assertEquals(photo.getOwnerName(), "LOCATION OWNER-IN-CHIEF");
         assertTrue(photo.getLocation().isEqual(l));
         assertEquals(photo.getLocation().getId(), l.getId());
+        assertEquals(photo.getCatCount(), p.getCatCount());
+    }
+
+    //Creates both a normal Photo and a Cat Photo, saves them and attempts to read them as both CatPhoto and normal Photo
+    @Test
+    public void checkPhotoAndCatPhotoDifference() throws Exception{
+        CatPhotoManager cpm = CatPhotoManager.getInstance();
+        PhotoManager pm = PhotoManager.getInstance();
+        String pathname = System.getProperty("user.dir");
+        //Get test pictures
+        File f1 = new File(pathname + "/src/testData/TESTPIC4.jpg");
+        File f2 = new File(pathname + "/src/testData/TESTPIC5.jpg");
+        //Create Photo from picture
+        CatPhoto p1 = cpm.createPhoto(f1);
+        Photo p2 = pm.createPhoto(f2);
+
+        //Add data p1
+        p1.setOwnerName("CAT OWNER");
+        p1.setOwnerLanguage(Language.GERMAN);
+        p1.setOwnerHomePage(new URL("https:\\\\www.cat.com"));
+        p1.setTags(new Tags("cat"));
+        p1.setOwnerId(1);
+        p1.setOwnerEmailAddress(EmailAddress.getFromString("owner@cat.com"));
+        p1.setCatCount(1);
+
+        //Add data p2
+        p2.setOwnerName("NOT CAT OWNER");
+        p2.setOwnerLanguage(Language.GERMAN);
+        p2.setOwnerHomePage(new URL("https:\\\\www.no-cat.com"));
+        p2.setTags(new Tags("no_cat"));
+        p2.setOwnerId(1);
+        p2.setOwnerEmailAddress(EmailAddress.getFromString("owner@no-cat.com"));
+
+        //Photos should be in the database now
+        cpm.savePhoto(p1);
+        pm.savePhoto(p2);
+        PhotoId testPhotoId1 = p1.getId();
+        PhotoId testPhotoId2 = p2.getId();
+
+        //Clear caches for reasons as before
+        cpm.photoCache.clear();
+        pm.photoCache.clear();
+
+        //Photos should now be read from the database.
+        //Read saved CatPhoto as CatPhoto
+        CatPhoto p1cat = cpm.getPhotoFromId(testPhotoId1);
+        //Read saved Photo as CatPhoto (should work)
+        CatPhoto p2cat = cpm.getPhotoFromId(testPhotoId2);
+        //Read saved CatPhoto as Photo (should also work)
+        Photo p1base = pm.getPhotoFromId(testPhotoId1);
+        //Read saved Photo as Photo (definetly works)
+        Photo p2base = pm.getPhotoFromId(testPhotoId2);
+
+        //Check read photo and location
+        assertEquals(p1cat.getOwnerName(), p1base.getOwnerName(), "CAT OWNER");
+        assertEquals(p2cat.getOwnerName(), p2base.getOwnerName(), "NOT CAT OWNER");
+        assertEquals(p1cat.getCatCount(), 1);
+        //Reading NULL from the table results in a 0, which is great, as non-CatPhotos read as CatPhotos will always have a cat_count of 0.
+        assertTrue(p2cat.getCatCount() == 0);
     }
 
 }

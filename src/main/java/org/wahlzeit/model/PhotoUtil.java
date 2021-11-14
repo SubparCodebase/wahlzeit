@@ -32,6 +32,18 @@ public class PhotoUtil {
 
 		return result;
 	}
+
+	public static CatPhoto createCatPhoto(File source, PhotoId id) throws Exception {
+		CatPhoto result = CatPhotoFactory.getInstance().createPhoto(id);
+
+		Image sourceImage = createImageFiles(source, id);
+
+		int sourceWidth = sourceImage.getWidth(null);
+		int sourceHeight = sourceImage.getHeight(null);
+		result.setWidthAndHeight(sourceWidth, sourceHeight);
+
+		return result;
+	}
 	
 	/**
 	 * 

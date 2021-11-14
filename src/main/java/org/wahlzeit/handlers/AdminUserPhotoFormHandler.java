@@ -30,7 +30,7 @@ public class AdminUserPhotoFormHandler extends AbstractWebFormHandler {
 
 		String photoId = us.getAndSaveAsString(args, "photoId");
 
-		Photo photo = PhotoManager.getPhoto(photoId);
+		Photo photo = CatPhotoManager.getPhoto(photoId);
 		part.addString(Photo.THUMB, getPhotoThumb(us, photo));
 
 		part.addString("photoId", photoId);
@@ -44,14 +44,14 @@ public class AdminUserPhotoFormHandler extends AbstractWebFormHandler {
 	 */
 	protected String doHandlePost(UserSession us, Map args) {
 		String id = us.getAndSaveAsString(args, "photoId");
-		Photo photo = PhotoManager.getPhoto(id);
+		Photo photo = CatPhotoManager.getPhoto(id);
 	
 		String tags = us.getAndSaveAsString(args, Photo.TAGS);
 		photo.setTags(new Tags(tags));
 		String status = us.getAndSaveAsString(args, Photo.STATUS);
 		photo.setStatus(PhotoStatus.getFromString(status));
 
-		PhotoManager pm = PhotoManager.getInstance();
+		PhotoManager pm = CatPhotoManager.getInstance();
 		pm.savePhoto(photo);
 		
 		StringBuffer sb = UserLog.createActionEntry("AdminUserPhoto");
