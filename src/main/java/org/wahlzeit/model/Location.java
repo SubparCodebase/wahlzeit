@@ -15,7 +15,7 @@ public class Location extends DataObject{
         this.id = id;
         this.name = name;
         incWriteCount();
-        coordinate = new Coordinate(x, y, z);
+        coordinate = new CartesianCoordinate(x, y, z);
     }
 
     public Location(LocationId id, String name, Coordinate c) {
@@ -29,7 +29,7 @@ public class Location extends DataObject{
         this.id = LocationId.getNextId();
         this.name = name;
         incWriteCount();
-        coordinate = new Coordinate(x, y, z);
+        coordinate = new CartesianCoordinate(x, y, z);
     }
 
     public Location(String name, Coordinate c) {
@@ -83,7 +83,8 @@ public class Location extends DataObject{
     public void readFrom(ResultSet rset) throws SQLException {
         id = LocationId.getIdFromInt(rset.getInt("id"));
         name = rset.getString("name");
-        coordinate = new Coordinate(rset.getDouble("x_coordinate"),
+        //Load as cartesian coordinate, since its saved as such
+        coordinate = new CartesianCoordinate(rset.getDouble("x_coordinate"),
                 rset.getDouble("y_coordinate"),
                 rset.getDouble("z_coordinate"));
 
@@ -93,9 +94,11 @@ public class Location extends DataObject{
     public void writeOn(ResultSet rset) throws SQLException {
         rset.updateInt("id", id.asInt());
         rset.updateString("name", name);
-        rset.updateDouble("x_coordinate", coordinate.getX());
-        rset.updateDouble("y_coordinate", coordinate.getY());
-        rset.updateDouble("z_coordinate", coordinate.getZ());
+        //Save as cartesian coordinate
+        CartesianCoordinate c =coordinate.asCartesianCoordinate();
+        rset.updateDouble("x_coordinate", c.getX());
+        rset.updateDouble("y_coordinate", c.getY());
+        rset.updateDouble("z_coordinate", c.getZ());
     }
 
     @Override
