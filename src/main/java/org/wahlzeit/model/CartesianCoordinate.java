@@ -3,15 +3,16 @@ package org.wahlzeit.model;
 import java.sql.*;
 import java.net.*;
 import java.lang.Math.*;
+import java.util.Objects;
 
 import org.wahlzeit.services.*;
 import org.wahlzeit.utils.*;
 
-public class CartesianCoordinate implements Coordinate{
+public class CartesianCoordinate extends AbstractCoordinate{
 
-    private double x;
-    private double y;
-    private double z;
+    protected double x;
+    protected double y;
+    protected double z;
 
     public CartesianCoordinate(double x, double y, double z){
         this.x = x;
@@ -74,14 +75,8 @@ public class CartesianCoordinate implements Coordinate{
     }
 
     @Override
-    public double getCartesianDistance(Coordinate c) {
-        CartesianCoordinate other = c.asCartesianCoordinate();
-        return Math.sqrt(Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2) + Math.pow(other.z - this.z, 2));
-    }
-
-    @Override
-    public double getCentralAngle(Coordinate c) {
-        return this.asSphericCoordinate().getCentralAngle(c);
+    public int hashCode(){
+        return Objects.hash(x, y, z);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.wahlzeit.model;
 
 import java.sql.*;
+import java.util.Objects;
 
 import org.wahlzeit.services.*;
 
@@ -72,6 +73,11 @@ public class Location extends DataObject{
 
         Location compare = (Location) o;
         return isEqual(compare);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(name, coordinate.hashCode(), id);
     }
 
     @Override

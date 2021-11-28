@@ -2,21 +2,22 @@ package org.wahlzeit.model;
 
 import com.sun.mail.util.logging.MailHandler;
 
-public class SphericCoordinate implements Coordinate{
+import java.util.Objects;
 
-    private double phi; //Azimuth, longitude
-    private double theta; //Inclination, latitude
-    private double radius;
+public class SphericCoordinate extends AbstractCoordinate{
+
+    protected double phi; //Azimuth, longitude
+    protected double theta; //Inclination, latitude
+    protected double radius;
 
     //Expecting angle input in radians
     public SphericCoordinate(double phi, double theta, double r){
-        //Coordinates are restricted to ensure unique coordinates (also makes equality checks easier)
-        //Restrictions chosen according to https://www.sciencedirect.com/topics/computer-science/spherical-polar-coordinate
         if(r < 0){
             throw new IllegalArgumentException("Radius cannot be negative");
         }
-        this.phi = phi;
-        this.theta = theta;
+        //Keeping Angles within [-2PI, 2PI]
+        this.phi = phi%(Math.PI*2);
+        this.theta = theta%(Math.PI*2);
         this.radius = r;
     }
 
@@ -31,11 +32,11 @@ public class SphericCoordinate implements Coordinate{
     }
 
     public void setPhi(double phi){
-        this.phi = phi;
+        this.phi = phi%(Math.PI*2);
     }
 
     public void setTheta(double theta){
-        this.theta = theta;
+        this.theta = theta%(Math.PI*2);
     }
 
     public void setRadius(double r){
@@ -60,6 +61,11 @@ public class SphericCoordinate implements Coordinate{
     }
 
     @Override
+    public int hashCode(){
+        return Objects.hash(phi, theta, radius);
+    }
+
+    @Override
     public CartesianCoordinate asCartesianCoordinate() {
         //3x = r*sin(theta)*cos(phi)
         double x = Math.sin(theta) * Math.cos(phi) * radius;
@@ -73,17 +79,6 @@ public class SphericCoordinate implements Coordinate{
     @Override
     public SphericCoordinate asSphericCoordinate() {
         return this;
-    }
-
-    @Override
-    public double getCartesianDistance(Coordinate c) {
-        return this.asCartesianCoordinate().getCartesianDistance(c);
-    }
-
-    @Override
-    public double getCentralAngle(Coordinate c) {
-        SphericCoordinate other = c.asSphericCoordinate();
-        return Math.acos(Math.sin(theta)* Math.sin(other.theta) + Math.cos(theta) * Math.cos(other.theta) * Math.cos(Math.abs(phi - other.phi)));
     }
 
     @Override

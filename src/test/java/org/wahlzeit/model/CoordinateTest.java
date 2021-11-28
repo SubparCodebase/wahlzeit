@@ -131,13 +131,25 @@ public class CoordinateTest{
     //Same as isEqualTest but equals() is used.
     @Test
     public void equalsTest(){
-        //
         for (int i = 0; i < testCoords.size(); i++){
             for (int j = 0; j < testCoords.size(); j++){
                 if(i == j){
                     assertTrue(testCoords.get(i).equals(testCoords.get(j)));
                 }else {
                     assertFalse(testCoords.get(i).equals(testCoords.get(j)));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void hashCodeTest(){
+        for (int i = 0; i < testCoords.size(); i++){
+            for (int j = 0; j < testCoords.size(); j++){
+                if(i == j){
+                    assertTrue(testCoords.get(i).hashCode() == testCoords.get(j).hashCode());
+                }else {
+                    assertFalse(testCoords.get(i).hashCode() == testCoords.get(j).hashCode());
                 }
             }
         }
