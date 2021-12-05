@@ -93,7 +93,6 @@ public class Location extends DataObject{
         coordinate = new CartesianCoordinate(rset.getDouble("x_coordinate"),
                 rset.getDouble("y_coordinate"),
                 rset.getDouble("z_coordinate"));
-
     }
 
     @Override

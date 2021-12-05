@@ -102,7 +102,7 @@ public class CoordinateTest{
                 ergs.add(c.getCentralAngle(c2));
             }
         }
-        System.out.println("Results for distanceTest");
+        System.out.println("Results for centralAngleTest");
         for (int i = 0; i < ergs.size(); i++){
             System.out.println("Actual: " + ergs.get(i).toString() + "  Target: " + solution.get(i).toString());
             assertEquals(ergs.get(i), solution.get(i), 0.0001);
