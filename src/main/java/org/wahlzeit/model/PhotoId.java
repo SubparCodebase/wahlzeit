@@ -48,6 +48,8 @@ public class PhotoId {
 	 * 
 	 */
 	public static int getCurrentIdAsInt() {
+		//Preconditions: None
+		//Postconditions: None
 		return currentId;
 	}
 	
@@ -55,21 +57,25 @@ public class PhotoId {
 	 * 
 	 */
 	public static synchronized void setCurrentIdFromInt(int id) {
+		//Preconditions: None
 		currentId = id;
 		ids = new PhotoId[currentId + BUFFER_SIZE_INCREMENT];
 		ids[0] = NULL_ID;
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public static synchronized int getNextIdAsInt() {
+		//Preconditions: None
 		currentId += 1;
 		if (currentId >= ids.length) {
 			PhotoId[] nids = new PhotoId[currentId + BUFFER_SIZE_INCREMENT];
 			System.arraycopy(ids, 0, nids, 0, currentId);
 			ids = nids;
 		}
+		//Postconditions: None
 		return currentId;
 	}
 
@@ -77,6 +83,7 @@ public class PhotoId {
 	 * 
 	 */
 	public static PhotoId getIdFromInt(int id) {
+		//Preconditions: None
 		if ((id < 0) || (id > currentId)) {
 			return NULL_ID;
 		}
@@ -92,7 +99,8 @@ public class PhotoId {
 				}
 			}
 		}
-		
+
+		//Postconditions: None
 		return result;
 	}
 	
@@ -100,6 +108,8 @@ public class PhotoId {
 	 * 
 	 */
 	public static PhotoId getIdFromString(String id) {
+		//Preconditions: None, null check for id is done in getFromString
+		//Postconditions: None
 		return getIdFromInt(getFromString(id));
 	}
 	
@@ -107,6 +117,8 @@ public class PhotoId {
 	 * 
 	 */
 	public static PhotoId getNextId() {
+		//Preconditions: None
+		//Postconditions: None
 		return getIdFromInt(getNextIdAsInt());
 	}
 	
@@ -114,10 +126,12 @@ public class PhotoId {
 	 * 
 	 */
 	public static PhotoId getRandomId() {
+		//Preconditions: None
 		int max = getCurrentIdAsInt() - 1;
 		int id = randomNumber.nextInt();
 		id = (id == Integer.MIN_VALUE) ? id ++ : id;
 		id = (Math.abs(id) % max) + 1;
+		//Postconditions: None
 		return getIdFromInt(id);
 	}
 	
@@ -131,21 +145,28 @@ public class PhotoId {
 	 * 
 	 */
 	protected PhotoId(int myValue) {
+		//Preconditions: None
 		value = myValue;
 		stringValue = getFromInt(myValue);
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public boolean equals(Object o) {
-		// @FIXME
+		// Fixed :)
+		//Preconditions: Object must not be null, Object Class must match own Class, Class Invariants of the Object must hold (not checked here)
+		if (o == null) {
+			return false;
+		}
 		
 		if (!(o instanceof PhotoId)) {
 			return false;
 		}
 		
 		PhotoId pid = (PhotoId) o;
+		//Postconditions: None
 		return isEqual(pid);
 	}
 	
@@ -153,6 +174,8 @@ public class PhotoId {
 	 * 
 	 */
 	public boolean isEqual(PhotoId other) {
+		//Preconditions: None
+		//Postconditions: None
 		return other.value == value;
 	}
 	
@@ -160,6 +183,8 @@ public class PhotoId {
 	 * @methodtype get
 	 */
 	public int hashCode() {
+		//Preconditions: None
+		//Postconditions: None
 		return value;
 	}
 	
@@ -167,6 +192,8 @@ public class PhotoId {
 	 * 
 	 */
 	public boolean isNullId() {
+		//Preconditions: None
+		//Postconditions: None
 		return this == NULL_ID;
 	}
 	
@@ -174,6 +201,8 @@ public class PhotoId {
 	 * 
 	 */
 	public int asInt() {
+		//Preconditions: None
+		//Postconditions: None
 		return value;
 	}
 	
@@ -181,13 +210,20 @@ public class PhotoId {
 	 * 
 	 */
 	public String asString() {
+		//Preconditions: None
+		//Postconditions: None
 		return stringValue;
+	}
+
+	public void assertClassInvariants() {
+		//There is nothing to check here, method added for completeness, will not be called
 	}
 	
 	/**
 	 * 
 	 */
 	public static String getFromInt(int id) {
+		//Preconditions: None
 		StringBuffer result = new StringBuffer(10);
 		
 		id += ID_START;
@@ -202,7 +238,8 @@ public class PhotoId {
 			result.insert(0, letterOrDigit);
 
 		}
-		
+
+		//Postconditions: None
 		return "x" + result.toString();
 	}
 	
@@ -210,6 +247,8 @@ public class PhotoId {
 	 * 
 	 */
 	public static int getFromString(String value) {
+		//Preconditions: The argument value is not null
+		ContractEnforcerUtil.assertArgumentNonNull(value);
 		int result = 0;		
 		for (int i = 1; i < value.length(); i ++ ) {
 			int temp = 0;
@@ -227,6 +266,7 @@ public class PhotoId {
 			result = 0;
 		}
 
+		//Postconditions: None
 		return result;
 	}
 	

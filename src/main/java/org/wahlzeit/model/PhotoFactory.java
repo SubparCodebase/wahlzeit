@@ -23,11 +23,13 @@ public class PhotoFactory {
 	 * Public singleton access method.
 	 */
 	public static synchronized PhotoFactory getInstance() {
+		//Preconditions: None
 		if (instance == null) {
 			SysLog.logSysInfo("setting generic PhotoFactory");
 			setInstance(new PhotoFactory());
 		}
-		
+
+		//Postconditions: None
 		return instance;
 	}
 	
@@ -46,7 +48,9 @@ public class PhotoFactory {
 	 * Hidden singleton instance; needs to be initialized from the outside.
 	 */
 	public static void initialize() {
+		//Preconditions: None
 		getInstance(); // drops result due to getInstance() side-effects
+		//Postconditions: None
 	}
 	
 	/**
@@ -59,36 +63,51 @@ public class PhotoFactory {
 	/**
 	 * @methodtype factory
 	 */
+	//One create Photo per Photo Constructor, all checks are done in the Photo class itself
 	public Photo createPhoto() {
+		//Preconditions: None
 		return new Photo();
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public Photo createPhoto(PhotoId id) {
+		//Preconditions: None
 		return new Photo(id);
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public Photo createPhoto(ResultSet rs) throws SQLException {
+		//Preconditions: None
 		return new Photo(rs);
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public PhotoFilter createPhotoFilter() {
+		//Preconditions: None
 		return new PhotoFilter();
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public PhotoTagCollector createPhotoTagCollector() {
+		//Preconditions: None
 		return new PhotoTagCollector();
+		//Postconditions: None
+	}
+
+	public void assertClassInvariants() {
+		//There is nothing to check here, method added for completeness, will not be called
 	}
 
 }

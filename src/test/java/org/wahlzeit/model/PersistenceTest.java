@@ -209,8 +209,13 @@ public class PersistenceTest {
         //Photos should now be read from the database.
         //Read saved CatPhoto as CatPhoto
         CatPhoto p1cat = cpm.getPhotoFromId(testPhotoId1);
-        //Read saved Photo as CatPhoto (should work)
-        CatPhoto p2cat = cpm.getPhotoFromId(testPhotoId2);
+        //Read saved Photo as CatPhoto (should not work, assertion of the class invariant should fail)
+        try {
+            CatPhoto p2cat = cpm.getPhotoFromId(testPhotoId2);
+        }catch (AssertionError e){
+            //Working as intended
+        }
+
         //Read saved CatPhoto as Photo (should also work)
         Photo p1base = pm.getPhotoFromId(testPhotoId1);
         //Read saved Photo as Photo (definetly works)
@@ -218,10 +223,8 @@ public class PersistenceTest {
 
         //Check read photo and location
         assertEquals(p1cat.getOwnerName(), p1base.getOwnerName(), "CAT OWNER");
-        assertEquals(p2cat.getOwnerName(), p2base.getOwnerName(), "NOT CAT OWNER");
+        assertEquals(p2base.getOwnerName(), "NOT CAT OWNER");
         assertEquals(p1cat.getCatCount(), 1);
-        //Reading NULL from the table results in a 0, which is great, as non-CatPhotos read as CatPhotos will always have a cat_count of 0.
-        assertTrue(p2cat.getCatCount() == 0);
     }
 
 }

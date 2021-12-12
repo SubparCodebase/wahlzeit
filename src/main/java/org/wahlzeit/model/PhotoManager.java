@@ -37,6 +37,8 @@ public class PhotoManager extends ObjectManager {
 	 */
 	//Removed final to enable overriding in CatPhotoManager
 	public static PhotoManager getInstance() {
+		//Preconditions: None
+		//Postconditions: None
 		return instance;
 	}
 	
@@ -44,6 +46,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public static final boolean hasPhoto(String id) {
+		//Preconditions: None, null check for id is done in getIdFromString
+		//Postconditions: None
 		return hasPhoto(PhotoId.getIdFromString(id));
 	}
 	
@@ -51,6 +55,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public static final boolean hasPhoto(PhotoId id) {
+		//Preconditions: None, null check for id is done in getPhoto
+		//Postconditions: None
 		return getPhoto(id) != null;
 	}
 	
@@ -58,6 +64,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public static final Photo getPhoto(String id) {
+		//Preconditions: None, null check for id is done in getIdFromString
+		//Postconditions: None
 		return getPhoto(PhotoId.getIdFromString(id));
 	}
 	
@@ -65,6 +73,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public static final Photo getPhoto(PhotoId id) {
+		//Preconditions: None, null check for id is done in getPhotoFromId
+		//Postconditions: None
 		return instance.getPhotoFromId(id);
 	}
 	
@@ -72,6 +82,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public PhotoManager() {
+		//Preconditions: None
+		//Postconditions: None
 		photoTagCollector = PhotoFactory.getInstance().createPhotoTagCollector();
 	}
 	
@@ -80,6 +92,8 @@ public class PhotoManager extends ObjectManager {
 	 * @methodproperties primitive
 	 */
 	protected boolean doHasPhoto(PhotoId id) {
+		//Preconditions: None, null check for id is done in calling method
+		//Postconditions: None
 		return photoCache.containsKey(id);
 	}
 	
@@ -87,6 +101,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public Photo getPhotoFromId(PhotoId id) {
+		//Preconditions: The argument id is not null
+		ContractEnforcerUtil.assertArgumentNonNull(id);
 		if (id.isNullId()) {
 			return null;
 		}
@@ -104,7 +120,9 @@ public class PhotoManager extends ObjectManager {
 				doAddPhoto(result);
 			}
 		}
-		
+
+		//Postconditions: Location is now added to the Cache, if the result was not null
+		if(result!=null)assert photoCache.get(id) != null;
 		return result;
 	}
 		
@@ -113,6 +131,8 @@ public class PhotoManager extends ObjectManager {
 	 * @methodproperties primitive
 	 */
 	protected Photo doGetPhotoFromId(PhotoId id) {
+		//Preconditions: None, null check for id is done in calling method
+		//Postconditions: None
 		return photoCache.get(id);
 	}
 	
@@ -120,6 +140,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	protected Photo createObject(ResultSet rset) throws SQLException {
+		//Preconditions: None, null check for rset is done in createPhoto
+		//Postconditions: None
 		return PhotoFactory.getInstance().createPhoto(rset);
 	}
 	
@@ -129,6 +151,8 @@ public class PhotoManager extends ObjectManager {
 	 * Load all persisted photos. Executed when Wahlzeit is restarted.
 	 */
 	public void addPhoto(Photo photo) {
+		//Preconditions: The argument photo is not null
+		ContractEnforcerUtil.assertArgumentNonNull(photo);
 		PhotoId id = photo.getId();
 		assertIsNewPhoto(id);
 		doAddPhoto(photo);
@@ -140,6 +164,8 @@ public class PhotoManager extends ObjectManager {
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
+		//Postconditions: Photo is now added to the Cache
+		assert photoCache.get(id) != null;
 	}
 	
 	/**
@@ -147,13 +173,17 @@ public class PhotoManager extends ObjectManager {
 	 * @methodproperties primitive
 	 */
 	protected void doAddPhoto(Photo myPhoto) {
+		//Preconditions: None, null check for myLocation is done in calling method
 		photoCache.put(myPhoto.getId(), myPhoto);
+		//Postconditions: None
 	}
 
 	/**
 	 * @methodtype command
 	 */
 	public void loadPhotos(Collection<Photo> result) {
+		//Preconditions: The argument result is not null
+		ContractEnforcerUtil.assertArgumentNonNull(result);
 		try {
 			PreparedStatement stmt = getReadingStatement("SELECT * FROM photos");
 			readObjects(result, stmt);
@@ -168,7 +198,11 @@ public class PhotoManager extends ObjectManager {
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
-		
+
+		//Postconditions: All locations are now in the Cache
+		for (Photo photo : result) {
+			assert photoCache.get(photo.getId()) != null;
+		}
 		SysLog.logSysInfo("loaded all photos");
 	}
 	
@@ -176,24 +210,29 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public void savePhoto(Photo photo) {
+		//Preconditions: The argument photo is not null
+		ContractEnforcerUtil.assertArgumentNonNull(photo);
 		try {
 			PreparedStatement stmt = getUpdatingStatement("SELECT * FROM photos WHERE id = ?");
 			updateObject(photo, stmt);
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
+		//Postconditions: None
 	}
 	
 	/**
 	 * 
 	 */
 	public void savePhotos() {
+		//Preconditions: None
 		try {
 			PreparedStatement stmt = getUpdatingStatement("SELECT * FROM photos WHERE id = ?");
 			updateObjects(photoCache.values(), stmt);
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
+		//Postconditions: None
 	}
 	
 	/**
@@ -203,6 +242,8 @@ public class PhotoManager extends ObjectManager {
 	 * the Datastore, it is simply not persisted.
 	 */
 	public Set<Photo> findPhotosByOwner(String ownerName) {
+		//Preconditions: The argument ownerName is not null
+		ContractEnforcerUtil.assertArgumentNonNull(ownerName);
 		Set<Photo> result = new HashSet<Photo>();
 		try {
 			PreparedStatement stmt = getReadingStatement("SELECT * FROM photos WHERE owner_name = ?");
@@ -215,6 +256,10 @@ public class PhotoManager extends ObjectManager {
 			doAddPhoto(i.next());
 		}
 
+		//Postconditions: All locations are now in the Cache
+		for (Photo photo : result) {
+			assert photoCache.get(photo.getId()) != null;
+		}
 		return result;
 	}
 
@@ -224,6 +269,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	public Photo getVisiblePhoto(PhotoFilter filter) {
+		//Preconditions: The argument filter is not null
+		ContractEnforcerUtil.assertArgumentNonNull(filter);
 		Photo result = getPhotoFromFilter(filter);
 		
 		if(result == null) {
@@ -232,6 +279,7 @@ public class PhotoManager extends ObjectManager {
 			result = getPhotoFromFilter(filter);
 		}
 
+		//Postconditions: None
 		return result;
 	}
 	
@@ -239,6 +287,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	protected Photo getPhotoFromFilter(PhotoFilter filter) {
+		//Preconditions: The argument filter is not null
+		ContractEnforcerUtil.assertArgumentNonNull(filter);
 		PhotoId id = filter.getRandomDisplayablePhotoId();
 		Photo result = getPhotoFromId(id);
 		while((result != null) && !result.isVisible()) {
@@ -248,7 +298,8 @@ public class PhotoManager extends ObjectManager {
 				filter.addProcessedPhoto(result);
 			}
 		}
-		
+
+		//Postconditions: None
 		return result;
 	}
 	
@@ -256,6 +307,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	protected java.util.List<PhotoId> getFilteredPhotoIds(PhotoFilter filter) {
+		//Preconditions: The argument filter is not null
+		ContractEnforcerUtil.assertArgumentNonNull(filter);
 		java.util.List<PhotoId> result = new LinkedList<PhotoId>();
 
 		try {
@@ -287,7 +340,8 @@ public class PhotoManager extends ObjectManager {
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
-		
+
+		//Postconditions: None
 		return result;
 	}
 		
@@ -295,6 +349,7 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	protected PreparedStatement getUpdatingStatementFromConditions(int no) throws SQLException {
+		//Preconditions: None
 		String query = "SELECT * FROM tags";
 		if (no > 0) {
 			query += " WHERE";
@@ -306,7 +361,8 @@ public class PhotoManager extends ObjectManager {
 			}
 			query += " (tag = ?)";
 		}
-		
+
+		//Postconditions: None
 		return getUpdatingStatement(query);
 	}
 	
@@ -314,6 +370,8 @@ public class PhotoManager extends ObjectManager {
 	 * 
 	 */
 	protected void updateDependents(Persistent obj) throws SQLException {
+		//Preconditions: The argument obj is not null
+		ContractEnforcerUtil.assertArgumentNonNull(obj);
 		Photo photo = (Photo) obj;
 		
 		PreparedStatement stmt = getReadingStatement("DELETE FROM tags WHERE photo_id = ?");
@@ -329,15 +387,18 @@ public class PhotoManager extends ObjectManager {
 			SysLog.logQuery(stmt);
 			stmt.executeUpdate();					
 		}
+		//Postconditions: None
 	}
 		
 	/**
 	 * 
 	 */
 	public Photo createPhoto(File file) throws Exception {
+		//Preconditions: The argument file is not null, this is checked in PhotoUtil.createPhoto
 		PhotoId id = PhotoId.getNextId();
 		Photo result = PhotoUtil.createPhoto(file, id);
 		addPhoto(result);
+		//Postconditions: Location is now added to the Cache, this is checked in addPhoto
 		return result;
 	}
 	
@@ -345,9 +406,15 @@ public class PhotoManager extends ObjectManager {
 	 * @methodtype assertion
 	 */
 	protected void assertIsNewPhoto(PhotoId id) {
+		//Preconditions: None, null check for id is done in hasPhoto
 		if (hasPhoto(id)) {
 			throw new IllegalStateException("Photo already exists!");
 		}
+		//Postconditions: None
+	}
+
+	public void assertClassInvariants() {
+		//There is nothing to check here, method added for completeness, will not be called
 	}
 
 }

@@ -123,7 +123,7 @@ public class SphericCoordinate extends AbstractCoordinate{
     protected double doGetCentralAngle(SphericCoordinate c) {
         //Assertion of Class Invariants is not necessary here, as they are already checked in
         //the conversion methods in the call of getCentralAngle in AbstractCoordinate
-        //Preconditions: None
+        //Preconditions: None, check if argument is null is handled in getCentralAngle
         //Postconditions: None
         return Math.acos(Math.sin(c.theta)* Math.sin(this.theta) + Math.cos(c.theta) * Math.cos(this.theta) * Math.cos(Math.abs(c.phi - this.phi)));
     }
@@ -140,6 +140,9 @@ public class SphericCoordinate extends AbstractCoordinate{
     public boolean isEqual(Coordinate c) {
         assertClassInvariants();
         //Preconditions: None
+        if(c == null) {
+            return false;
+        }
         SphericCoordinate other = c.asSphericCoordinate();
         if(Math.abs(other.phi - this.phi)>epsilon || Math.abs(other.theta - this.theta)>epsilon || Math.abs(other.radius - this.radius)>epsilon)return false;
         //Postconditions: None

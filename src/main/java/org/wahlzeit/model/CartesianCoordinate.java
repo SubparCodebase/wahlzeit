@@ -117,7 +117,7 @@ public class CartesianCoordinate extends AbstractCoordinate{
     protected double doGetCartesianDistance(CartesianCoordinate c){
         //Assertion of Class Invariants is not necessary here, as they are already checked in
         //the conversion methods in the call of getCartesianDistance in AbstractCoordinate
-        //Preconditions: None
+        //Preconditions: None, check if argument is null is handled in getCartesianDistance
         //Postconditions: None
         return Math.sqrt(Math.pow(c.x - this.x, 2) + Math.pow(c.y - this.y, 2) + Math.pow(c.z - this.z, 2));
     }
@@ -134,6 +134,9 @@ public class CartesianCoordinate extends AbstractCoordinate{
     public boolean isEqual(Coordinate c) {
         assertClassInvariants();
         //Preconditions: None
+        if(c == null) {
+            return false;
+        }
         CartesianCoordinate other = c.asCartesianCoordinate();
         if(Math.abs(other.x - this.x)>epsilon || Math.abs(other.y - this.y)>epsilon || Math.abs(other.z - this.z)>epsilon)return false;
         //Postconditions: None
