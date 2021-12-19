@@ -18,7 +18,7 @@ public class Location extends DataObject{
         this.id = id;
         this.name = name;
         incWriteCount();
-        coordinate = new CartesianCoordinate(x, y, z);
+        coordinate = CartesianCoordinate.getCartesianCoordinate(x, y, z);
         //Postconditions: None
         assertClassInvariants();
     }
@@ -40,7 +40,7 @@ public class Location extends DataObject{
         this.id = LocationId.getNextId();
         this.name = name;
         incWriteCount();
-        coordinate = new CartesianCoordinate(x, y, z);
+        coordinate = CartesianCoordinate.getCartesianCoordinate(x, y, z);
         //Postconditions: None
         assertClassInvariants();
     }
@@ -138,7 +138,7 @@ public class Location extends DataObject{
         id = LocationId.getIdFromInt(rset.getInt("id"));
         name = rset.getString("name");
         //Load as cartesian coordinate, since its saved as such
-        coordinate = new CartesianCoordinate(rset.getDouble("x_coordinate"),
+        coordinate = CartesianCoordinate.getCartesianCoordinate(rset.getDouble("x_coordinate"),
                 rset.getDouble("y_coordinate"),
                 rset.getDouble("z_coordinate"));
         //Postconditions: None

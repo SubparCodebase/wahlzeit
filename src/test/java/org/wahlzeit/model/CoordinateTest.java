@@ -18,38 +18,57 @@ public class CoordinateTest{
     //Creating the test coordinates before test execution
     @BeforeClass
     public static void initCoordinateTest(){
+        //Remove all current coordinates that may have been added by other tests
+        CartesianCoordinate.coordList.clear();
+        SphericCoordinate.coordList.clear();
+
         testCoords = new LinkedList<Coordinate>();
-        testCoords.add(new CartesianCoordinate(1,1,1));
-        testCoords.add(new CartesianCoordinate(1,2,3));
-        testCoords.add(new CartesianCoordinate(5,-2,4));
-        testCoords.add(new CartesianCoordinate(-12,1,8));
-        testCoords.add(new SphericCoordinate(0, 1, 1));
-        testCoords.add(new SphericCoordinate(0.5, 0.25, 5.5));
-        testCoords.add(new SphericCoordinate(-0.379, 0.441, 2.75));
-        testCoords.add(new SphericCoordinate(0.733, -0.294, 12.3));
+        testCoords.add(CartesianCoordinate.getCartesianCoordinate(1,1,1));
+        testCoords.add(CartesianCoordinate.getCartesianCoordinate(1,2,3));
+        testCoords.add(CartesianCoordinate.getCartesianCoordinate(5,-2,4));
+        testCoords.add(CartesianCoordinate.getCartesianCoordinate(-12,1,8));
+        testCoords.add(SphericCoordinate.getSphericCoordinate(0, 1, 1));
+        testCoords.add(SphericCoordinate.getSphericCoordinate(0.5, 0.25, 5.5));
+        testCoords.add(SphericCoordinate.getSphericCoordinate(-0.379, 0.441, 2.75));
+        testCoords.add(SphericCoordinate.getSphericCoordinate(0.733, -0.294, 12.3));
+        assertTrue(CartesianCoordinate.coordList.size() == 4);
+        assertTrue(SphericCoordinate.coordList.size() == 4);
     }
 
     //
     @Test
     public void conversionTest(){
-        //Coordinates converted to their counterpart by hand (should be correct)
-        List<Coordinate> converted = new LinkedList<Coordinate>();
-        converted.add(new SphericCoordinate(0.785398,0.955316,1.732050));
-        converted.add(new SphericCoordinate(1.107148, 0.640522, 3.741657));
-        converted.add(new SphericCoordinate(-0.380506, 0.931931, 6.708203));
-        converted.add(new SphericCoordinate(-0.083141, 0.984389, 14.456832));
-        converted.add(new CartesianCoordinate(0.841470,0,0.540302));
-        converted.add(new CartesianCoordinate(1.194145, 0.652364, 5.329018));
-        converted.add(new CartesianCoordinate(1.09052, -0.434303, 2.486894));
-        converted.add(new CartesianCoordinate(-2.648904, -2.3849, 11.772236));
+        //Coordinates converted to their counterpart by hand (should be correct),
+        // also checks if conversion does not create a new object in the shared object list, since it is already present
 
+        List<Coordinate> converted = new LinkedList<Coordinate>();
+        converted.add(SphericCoordinate.getSphericCoordinate(0.785398,0.955316,1.732050));
+        converted.add(SphericCoordinate.getSphericCoordinate(1.107148, 0.640522, 3.741657));
+        converted.add(SphericCoordinate.getSphericCoordinate(-0.380506, 0.931931, 6.708203));
+        converted.add(SphericCoordinate.getSphericCoordinate(-0.083141, 0.984389, 14.456832));
+        converted.add(CartesianCoordinate.getCartesianCoordinate(0.841470,0,0.540302));
+        converted.add(CartesianCoordinate.getCartesianCoordinate(1.194145, 0.652364, 5.329018));
+        converted.add(CartesianCoordinate.getCartesianCoordinate(1.09052, -0.434303, 2.486894));
+        converted.add(CartesianCoordinate.getCartesianCoordinate(-2.648904, -2.3849, 11.772236));
+
+        //New Coordinates may already be present depending on test order
+        int cartesianListCurrSize = CartesianCoordinate.coordList.size();
+        int sphericListCurrSize = SphericCoordinate.coordList.size();
+
+        //Checks if values AND references are equal
         for(int i = 0; i < testCoords.size(); i++){
             if(testCoords.get(i).getClass() == CartesianCoordinate.class){
-                assertTrue(testCoords.get(i).asSphericCoordinate().isEqual(converted.get(i)));
+                SphericCoordinate compareConvert = testCoords.get(i).asSphericCoordinate();
+                assertTrue(compareConvert.isEqual(converted.get(i)) && compareConvert.equals(converted.get(i)));
             }else{
-                assertTrue(testCoords.get(i).asCartesianCoordinate().isEqual(converted.get(i)));
+                CartesianCoordinate compareConvert = testCoords.get(i).asCartesianCoordinate();
+                assertTrue(compareConvert.isEqual(converted.get(i)) && compareConvert.equals(converted.get(i)));
             }
         }
+
+        //The conversion should not have created new objects, since they are already present
+        assertTrue(CartesianCoordinate.coordList.size() == cartesianListCurrSize);
+        assertTrue(SphericCoordinate.coordList.size() == sphericListCurrSize);
     }
 
     //Calculates distances between all coordinates and compares them to desired results.
@@ -114,7 +133,7 @@ public class CoordinateTest{
         //Interchangability is already tested in the other tests, so this is currently not neccessary
     }
 
-    //Checking if equal and unequal coordinates are correctly detected
+    //Checking if equal and unequal coordinates are correctly detected by comparing attributes
     @Test
     public void isEqualTest(){
         for (int i = 0; i < testCoords.size(); i++){
@@ -128,7 +147,7 @@ public class CoordinateTest{
         }
     }
 
-    //Same as isEqualTest but equals() is used.
+    //Same as isEqualTest but equals() is used, as such only the references are compared, which should work as we used shared value objects
     @Test
     public void equalsTest(){
         for (int i = 0; i < testCoords.size(); i++){

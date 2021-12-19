@@ -1,8 +1,10 @@
 package org.wahlzeit.model;
 
+import java.awt.*;
 import java.sql.*;
 import java.net.*;
 import java.lang.Math.*;
+import java.util.LinkedList;
 import java.util.Objects;
 
 import org.wahlzeit.services.*;
@@ -10,17 +12,32 @@ import org.wahlzeit.utils.*;
 
 public class CartesianCoordinate extends AbstractCoordinate{
 
-    private double x;
-    private double y;
-    private double z;
+    //This is protected and not private to enable access during tests
+    protected static LinkedList<CartesianCoordinate> coordList = new LinkedList<CartesianCoordinate>();
 
-    public CartesianCoordinate(double x, double y, double z){
+    private final double x;
+    private final double y;
+    private final double z;
+
+    public static CartesianCoordinate getCartesianCoordinate(double x, double y, double z){
+        //Preconditions: None, all Coordinates are valid
+        //Checking if Coordinate already present
+        for (CartesianCoordinate c:coordList) {
+            if(Math.abs(c.x - x)<=epsilon && Math.abs(c.y - y)<=epsilon && Math.abs(c.z - z)<=epsilon)return c;
+        }
+        //Coordinate not present, creating a new one
+        return new CartesianCoordinate(x,y,z);
+    }
+
+    private CartesianCoordinate(double x, double y, double z){
         //Preconditions: None, all Coordinates are valid
         this.x = x;
         this.y = y;
         this.z = z;
         //Postconditions: None
         assertClassInvariants();
+        //New Coordinate is added to the shared list
+        coordList.add(this);
     }
 
     public double getX(){
@@ -44,34 +61,37 @@ public class CartesianCoordinate extends AbstractCoordinate{
         return z;
     }
 
-    public void setX(double x){
+    public CartesianCoordinate setX(double x){
         assertClassInvariants();
         //Preconditions: None, all Coordinates are valid
-        this.x = x;
-        //Postconditions: None
-        assertClassInvariants();
+        CartesianCoordinate changedCoord = getCartesianCoordinate(x, this.y, this.z);
+        //Postconditions: Changed Coordinate needs to be valid
+        changedCoord.assertClassInvariants();
+        return changedCoord;
     }
 
-    public void setY(double y){
+    public CartesianCoordinate setY(double y){
         assertClassInvariants();
         //Preconditions: None, all Coordinates are valid
-        this.y = y;
-        //Postconditions: None
-        assertClassInvariants();
+        CartesianCoordinate changedCoord = getCartesianCoordinate(this.x, y, this.z);
+        //Postconditions: Changed Coordinate needs to be valid
+        changedCoord.assertClassInvariants();
+        return changedCoord;
     }
 
-    public void setZ(double z){
+    public CartesianCoordinate setZ(double z){
         assertClassInvariants();
         //Preconditions: None, all Coordinates are valid
-        this.z = z;
-        //Postconditions: None
-        assertClassInvariants();
+        CartesianCoordinate changedCoord = getCartesianCoordinate(this.x, this.y, z);
+        //Postconditions: Changed Coordinate needs to be valid
+        changedCoord.assertClassInvariants();
+        return changedCoord;
     }
 
     @Override
     public boolean equals(Object o) {
         assertClassInvariants();
-        //Preconditions: Object must not be null, Object Class must match own Class, Class Invariants of the Object must hold
+        /*//Preconditions: Object must not be null, Object Class must match own Class, Class Invariants of the Object must hold
         if (o == null) {
             return false;
         }
@@ -85,7 +105,8 @@ public class CartesianCoordinate extends AbstractCoordinate{
         compare.assertClassInvariants();
 
         //Postconditions: None
-        return isEqual(compare);
+        return isEqual(compare);*/
+        return this == o;
     }
 
     @Override
@@ -106,7 +127,7 @@ public class CartesianCoordinate extends AbstractCoordinate{
         double theta = Math.acos(z/r);
         //tan(phi) = y/x;
         double phi = Math.atan(y/x);
-        SphericCoordinate converted = new SphericCoordinate(phi, theta, r);
+        SphericCoordinate converted = SphericCoordinate.getSphericCoordinate(phi, theta, r);
         //Postconditions: None (Theoretically: New coordinate must be equal to the old coordinate)
         //HOWEVER: This leads to a Stackoverflow, as we cannot check if the new Coordinate is
         //Equal without calling a conversion method, which then again needs to make this assertion.
@@ -127,9 +148,17 @@ public class CartesianCoordinate extends AbstractCoordinate{
         assertClassInvariants();
         //Preconditions: None
         //Postconditions: None
-        return Objects.hash(x, y, z);
+        //return Objects.hash(x, y, z);
+        return super.hashCode();
     }
 
+    @Override
+    public Object clone(){
+        return this;
+    }
+
+    //Since this is a shared value object, a simple "return this == c.asCartesianCoordinate()"
+    // would suffice, i left the method to preserve a way to check attribute equality
     @Override
     public boolean isEqual(Coordinate c) {
         assertClassInvariants();

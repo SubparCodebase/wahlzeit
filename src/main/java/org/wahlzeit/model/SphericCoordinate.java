@@ -2,16 +2,31 @@ package org.wahlzeit.model;
 
 import com.sun.mail.util.logging.MailHandler;
 
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class SphericCoordinate extends AbstractCoordinate{
 
-    private double phi; //Azimuth, longitude
-    private double theta; //Inclination, latitude
-    private double radius;
+    //This is protected and not private to enable access during tests
+    protected static LinkedList<SphericCoordinate> coordList = new LinkedList<SphericCoordinate>();
+
+    private final double phi; //Azimuth, longitude
+    private final double theta; //Inclination, latitude
+    private final double radius;
+
+    public static SphericCoordinate getSphericCoordinate(double phi, double theta, double r){
+        //Preconditions: None, all Coordinates are valid
+        //Checking if Coordinate already present
+        for (SphericCoordinate c:coordList) {
+            //Comparison with epsilon
+            if(Math.abs(c.phi - phi)<=epsilon && Math.abs(c.theta - theta)<=epsilon && Math.abs(c.radius - r)<=epsilon)return c;
+        }
+        //Coordinate not present, creating a new one
+        return new SphericCoordinate(phi,theta,r);
+    }
 
     //Expecting angle input in radians
-    public SphericCoordinate(double phi, double theta, double r){
+    private SphericCoordinate(double phi, double theta, double r){
         //Preconditions: r >= 0
         if(r < 0){
             throw new IllegalArgumentException("Radius cannot be negative");
@@ -24,6 +39,8 @@ public class SphericCoordinate extends AbstractCoordinate{
         this.radius = r;
         //Postcondtions: None
         assertClassInvariants();
+        //New Coordinate is added to the shared list
+        coordList.add(this);
     }
 
     public double getPhi(){
@@ -47,37 +64,40 @@ public class SphericCoordinate extends AbstractCoordinate{
         return radius;
     }
 
-    public void setPhi(double phi){
+    public SphericCoordinate setPhi(double phi){
         assertClassInvariants();
         //Preconditions: None
-        this.phi = phi%(Math.PI*2);
-        //Postconditions: None
-        assertClassInvariants();
+        SphericCoordinate changedCoord = getSphericCoordinate(phi%(Math.PI*2), this.theta, this.radius);
+        //Postconditions: Changed Coordinate needs to be valid
+        changedCoord.assertClassInvariants();
+        return changedCoord;
     }
 
-    public void setTheta(double theta){
+    public SphericCoordinate setTheta(double theta){
         assertClassInvariants();
         //Preconditions: None
-        this.theta = theta%(Math.PI*2);
-        //Postconditions: None
-        assertClassInvariants();
+        SphericCoordinate changedCoord = getSphericCoordinate(this.phi, theta%(Math.PI*2), this.radius);
+        //Postconditions: Changed Coordinate needs to be valid
+        changedCoord.assertClassInvariants();
+        return changedCoord;
     }
 
-    public void setRadius(double r){
+    public SphericCoordinate setRadius(double r){
         assertClassInvariants();
         //Preconditions: r >= 0
         if(r < 0){
             throw new IllegalArgumentException("Radius cannot be negative");
         }
-        this.radius = r;
-        //Postconditions: None
-        assertClassInvariants();
+        SphericCoordinate changedCoord = getSphericCoordinate(this.phi, this.theta, r);
+        //Postconditions: Changed Coordinate needs to be valid
+        changedCoord.assertClassInvariants();
+        return changedCoord;
     }
 
     @Override
     public boolean equals(Object o) {
         assertClassInvariants();
-        //Preconditions: Object must not be null, Object Class must match own Class, Class Invariants of the Object must hold
+        /*//Preconditions: Object must not be null, Object Class must match own Class, Class Invariants of the Object must hold
         if (o == null) {
             return false;
         }
@@ -91,7 +111,8 @@ public class SphericCoordinate extends AbstractCoordinate{
         compare.assertClassInvariants();
 
         //Postconditions: None
-        return isEqual(compare);
+        return isEqual(compare);*/
+        return this == o;
     }
 
     @Override
@@ -99,7 +120,13 @@ public class SphericCoordinate extends AbstractCoordinate{
         assertClassInvariants();
         //Preconditions: None
         //Postconditions: None
-        return Objects.hash(phi, theta, radius);
+        //return Objects.hash(phi, theta, radius);
+        return super.hashCode();
+    }
+
+    @Override
+    public Object clone(){
+        return this;
     }
 
     @Override
@@ -112,7 +139,7 @@ public class SphericCoordinate extends AbstractCoordinate{
         double y = Math.sin(theta) * Math.sin(phi) * radius;
         //z = r * cos(theta)
         double z = Math.cos(theta) * radius;
-        CartesianCoordinate converted = new CartesianCoordinate(x,y,z);
+        CartesianCoordinate converted = CartesianCoordinate.getCartesianCoordinate(x,y,z);
         //Postconditions: None (Theoretically: New coordinate must be equal to the old coordinate)
         //HOWEVER: This leads to a Stackoverflow, as we cannot check if the new Coordinate is
         //Equal without calling a conversion method, which then again needs to make this assertion.
@@ -136,6 +163,8 @@ public class SphericCoordinate extends AbstractCoordinate{
         return this;
     }
 
+    //Since this is a shared value object, a simple "return this == c.asSphericCoordinate()"
+    // would suffice, i left the method to preserve a way to check attribute equality
     @Override
     public boolean isEqual(Coordinate c) {
         assertClassInvariants();
