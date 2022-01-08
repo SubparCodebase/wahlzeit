@@ -1,5 +1,13 @@
 package org.wahlzeit.model;
 
+//getCartesianDistance and getCentralAngle call that conversion methods and the actual
+//calculation method, which are specified by the subclass of the passed parameter.
+@PatternInstance(
+        patternName = "Template Method",
+        participants = {
+                "AbstractClass"
+        }
+)
 public abstract class AbstractCoordinate implements Coordinate{
 
     @Override

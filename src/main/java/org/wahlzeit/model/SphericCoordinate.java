@@ -5,6 +5,20 @@ import com.sun.mail.util.logging.MailHandler;
 import java.util.LinkedList;
 import java.util.Objects;
 
+//The conversion methods and the doGetCentralAngle method implement
+//the subclass specific behavior used in the abstract superclass.
+@PatternInstance(
+        patternName = "Template Method",
+        participants = {
+                "ConcreteClass"
+        }
+)
+@PatternInstance(
+        patternName = "Value Object",
+        participants = {
+                "ValueObject"
+        }
+)
 public class SphericCoordinate extends AbstractCoordinate{
 
     //This is protected and not private to enable access during tests

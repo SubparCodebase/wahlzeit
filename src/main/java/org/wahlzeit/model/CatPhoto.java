@@ -3,6 +3,18 @@ package org.wahlzeit.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@PatternInstance(
+        patternName = "Abstract Factory",
+        participants = {
+                "AbstractProduct", "ConcreteProduct"
+        }
+)
+@PatternInstance(
+        patternName = "Factory Method",
+        participants = {
+                "Product", "ConcreteProduct"
+        }
+)
 public class CatPhoto extends Photo{
 
     protected int catCount;

@@ -10,6 +10,20 @@ import java.util.Objects;
 import org.wahlzeit.services.*;
 import org.wahlzeit.utils.*;
 
+//The conversion methods and the doGetCartesianDistance method implement
+//the subclass specific behavior used in the abstract superclass.
+@PatternInstance(
+        patternName = "Template Method",
+        participants = {
+                "ConcreteClass"
+        }
+)
+@PatternInstance(
+        patternName = "Value Object",
+        participants = {
+                "ValueObject"
+        }
+)
 public class CartesianCoordinate extends AbstractCoordinate{
 
     //This is protected and not private to enable access during tests

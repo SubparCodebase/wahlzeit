@@ -15,6 +15,22 @@ import org.wahlzeit.services.*;
 /**
  * A photo manager provides access to and manages photos.
  */
+@PatternInstance(
+		patternName = "Singleton",
+		participants = {
+				"Singleton"
+		}
+)
+//My reasoning behind this, is that methods like getPhotoFromId call doGetPhotoFromId, which could be overridden in a
+//subclass to change the behavior, while the part that reads from the database stays intact.
+//This seems very similar to the "Template Method" design pattern, with the only problem being that there is currently
+//no subclass which makes use of this pattern.
+@PatternInstance(
+		patternName = "Template Method",
+		participants = {
+				"AbstractClass", "ConcreteClass"
+		}
+)
 public class PhotoManager extends ObjectManager {
 	
 	/**

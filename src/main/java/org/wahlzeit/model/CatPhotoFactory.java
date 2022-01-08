@@ -5,6 +5,24 @@ import org.wahlzeit.services.SysLog;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@PatternInstance(
+        patternName = "Abstract Factory",
+        participants = {
+                "AbstractFactory", "ConcreteFactory"
+        }
+)
+@PatternInstance(
+        patternName = "Factory Method",
+        participants = {
+                "Creator", "ConcreteCreator"
+        }
+)
+@PatternInstance(
+        patternName = "Singleton",
+        participants = {
+                "Singleton"
+        }
+)
 public class CatPhotoFactory extends PhotoFactory{
 
     private static CatPhotoFactory instance = null;

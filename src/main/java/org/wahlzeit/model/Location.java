@@ -5,6 +5,18 @@ import java.util.Objects;
 
 import org.wahlzeit.services.*;
 
+@PatternInstance(
+        patternName = "Abstract Factory",
+        participants = {
+                "AbstractProduct", "ConcreteProduct"
+        }
+)
+@PatternInstance(
+        patternName = "Factory Method",
+        participants = {
+                "Product", "ConcreteProduct"
+        }
+)
 public class Location extends DataObject{
 
     //Using an id to differentiate between locations, as its easier than having the the combination of name and coordinate as primary key.

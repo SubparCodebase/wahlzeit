@@ -10,6 +10,24 @@ import java.sql.*;
 import org.wahlzeit.services.*;
 
 //Just a copy of PhotoFactory for Location to reduce changes in LocationManager
+@PatternInstance(
+        patternName = "Abstract Factory",
+        participants = {
+                "AbstractFactory", "ConcreteFactory"
+        }
+)
+@PatternInstance(
+        patternName = "Factory Method",
+        participants = {
+                "Creator", "ConcreteCreator"
+        }
+)
+@PatternInstance(
+        patternName = "Singleton",
+        participants = {
+                "Singleton"
+        }
+)
 public class LocationFactory {
 
     private static LocationFactory instance = null;

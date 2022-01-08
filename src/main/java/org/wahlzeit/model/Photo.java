@@ -14,6 +14,18 @@ import org.wahlzeit.utils.*;
 /**
  * A photo represents a user-provided (uploaded) photo.
  */
+@PatternInstance(
+		patternName = "Abstract Factory",
+		participants = {
+				"AbstractProduct", "ConcreteProduct"
+		}
+)
+@PatternInstance(
+		patternName = "Factory Method",
+		participants = {
+				"Product", "ConcreteProduct"
+		}
+)
 public class Photo extends DataObject {
 
 	/**
