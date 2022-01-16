@@ -78,7 +78,6 @@ public class PersistenceTest {
         p.setTags(new Tags("testTag"));
         p.setOwnerId(1);
         p.setOwnerEmailAddress(EmailAddress.getFromString("testname@default.net"));
-        p.setCatCount(5);
 
         pm.savePhoto(p); //Photo should be in the database now
         PhotoId testPhotoId = p.getId();
@@ -87,7 +86,6 @@ public class PersistenceTest {
 
         //Check if read photo data matches (just one check should suffice)
         assertEquals(photo.getOwnerName(), "TEST NAME");
-        assertEquals(photo.getCatCount(), p.getCatCount());
     }
 
     //Inserts a photo with associated location in the database, then clears the manager caches to check if the photo and location can be retrieved from the database.
@@ -105,7 +103,6 @@ public class PersistenceTest {
         p.setTags(new Tags("earths_core"));
         p.setOwnerId(1);
         p.setOwnerEmailAddress(EmailAddress.getFromString("owner@earths-core.com"));
-        p.setCatCount(5);
 
         //Create and add location
         LocationManager lm = LocationManager.getInstance();
@@ -125,7 +122,6 @@ public class PersistenceTest {
         assertEquals(photo.getOwnerName(), "LOCATION OWNER");
         assertTrue(photo.getLocation().isEqual(l));
         assertEquals(photo.getLocation().getId(), l.getId());
-        assertEquals(photo.getCatCount(), p.getCatCount());
     }
 
     //Inserts a photo with associated already in the database existing location in the database,
@@ -143,7 +139,6 @@ public class PersistenceTest {
         p.setTags(new Tags("earths_core"));
         p.setOwnerId(1);
         p.setOwnerEmailAddress(EmailAddress.getFromString("owner-in-chief@earths-core.com"));
-        p.setCatCount(5);
 
         //Add last added location to the photo (will be the location from insertImageWithLocationTest)
         LocationManager lm = LocationManager.getInstance();
@@ -163,7 +158,6 @@ public class PersistenceTest {
         assertEquals(photo.getOwnerName(), "LOCATION OWNER-IN-CHIEF");
         assertTrue(photo.getLocation().isEqual(l));
         assertEquals(photo.getLocation().getId(), l.getId());
-        assertEquals(photo.getCatCount(), p.getCatCount());
     }
 
     //Creates both a normal Photo and a Cat Photo, saves them and attempts to read them as both CatPhoto and normal Photo
@@ -186,7 +180,6 @@ public class PersistenceTest {
         p1.setTags(new Tags("cat"));
         p1.setOwnerId(1);
         p1.setOwnerEmailAddress(EmailAddress.getFromString("owner@cat.com"));
-        p1.setCatCount(1);
 
         //Add data p2
         p2.setOwnerName("NOT CAT OWNER");
@@ -224,7 +217,6 @@ public class PersistenceTest {
         //Check read photo and location
         assertEquals(p1cat.getOwnerName(), p1base.getOwnerName(), "CAT OWNER");
         assertEquals(p2base.getOwnerName(), "NOT CAT OWNER");
-        assertEquals(p1cat.getCatCount(), 1);
     }
 
 }

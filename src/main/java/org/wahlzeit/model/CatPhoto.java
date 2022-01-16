@@ -17,34 +17,34 @@ import java.sql.SQLException;
 )
 public class CatPhoto extends Photo{
 
-    protected int catCount;
+    protected Cat depictedCat;
 
     public CatPhoto() {
         //Preconditions: None
-        this(1);
-        //Postconditions: None
-        //ClassInvariants are checked in the called constructor
-    }
-
-    public CatPhoto(PhotoId myId) {
-        //Preconditions: The argument myId is not null, this will be check in the called constructor
-        this(myId, 1);
-        //Postconditions: None
-        //ClassInvariants are checked in the called constructor
-    }
-
-    public CatPhoto(int count){
-        //Preconditions: None
         super();
-        catCount = count;
         //Postconditions: None
         assertClassInvariants();
     }
 
-    public CatPhoto(PhotoId myId, int count){
+    public CatPhoto(PhotoId myId) {
+        //Preconditions: The argument myId is not null, this will be check in the called constructor
+        super(myId);
+        //Postconditions: None
+        assertClassInvariants();
+    }
+
+    public CatPhoto(Cat cat){
+        //Preconditions: None
+        super();
+        depictedCat = cat;
+        //Postconditions: None
+        assertClassInvariants();
+    }
+
+    public CatPhoto(PhotoId myId, Cat cat){
         //Preconditions: The argument myId is not null, this will be checked in the superclass
         super(myId);
-        catCount = count;
+        depictedCat = cat;
         //Postconditions: None
         assertClassInvariants();
     }
@@ -61,7 +61,7 @@ public class CatPhoto extends Photo{
         //ClassInvariants are not checked here, since we override the Object anyway
         //Preconditions: The argument rset is not null, this is checked in the superclass call of readFrom
         super.readFrom(rset);
-        catCount = rset.getInt("cat_count");
+        //Reading the Cat Object would go here if persistence would be needed
         //Postconditions: None
         assertClassInvariants();
     }
@@ -71,31 +71,30 @@ public class CatPhoto extends Photo{
         assertClassInvariants();
         //Preconditions: The argument rset is not null, this is checked in the superclass call of readFrom
         super.writeOn(rset);
-        rset.updateInt("cat_count", catCount);
+        //Writing the Cat Object would go here if persistence would be needed
         //Postconditions: None
         assertClassInvariants();
     }
 
-    public int getCatCount(){
+    public Cat getDepictedCat(){
         assertClassInvariants();
         //Preconditions: None
         //Postconditions: None
-        return catCount;
+        return depictedCat;
     }
 
-    public void setCatCount(int count){
+    public void setDepictedCat(Cat cat){
         assertClassInvariants();
         //Preconditions: count >= 1
-        //A CatPhoto needs to have atleast one cat.
-        if(count >= 1) catCount = count;
+        depictedCat = cat;
         //Postconditions: None
         assertClassInvariants();
     }
 
     @Override
     public void assertClassInvariants(){
-        //Invariant: A CatPhoto needs to have atleast one cat.
-        assert catCount > 0;
+        //If the Photo has a Cat, it also needs to assert its invariants
+        //Not done here, as its not part of the homework
         //If the Photo has a Location, it also needs to assert its invariants
         if(location != null)location.assertClassInvariants();
     }

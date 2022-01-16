@@ -59,15 +59,15 @@ public class CatPhotoFactory extends PhotoFactory{
         //Postconditions: None
     }
 
-    public CatPhoto createPhoto(int count) {
+    public CatPhoto createPhoto(Cat cat) {
         //Preconditions: None
-        return new CatPhoto(count);
+        return new CatPhoto(cat);
         //Postconditions: None
     }
 
-    public CatPhoto createPhoto(PhotoId id, int count) {
+    public CatPhoto createPhoto(PhotoId id, Cat cat) {
         //Preconditions: None
-        return new CatPhoto(id, count);
+        return new CatPhoto(id, cat);
         //Postconditions: None
     }
 
