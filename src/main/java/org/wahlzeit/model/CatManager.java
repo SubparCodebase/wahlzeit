@@ -54,6 +54,8 @@ public class CatManager extends ObjectManager {
         return instance.getCatFromId(id);
     }
 
+    //Documentation for Homework cw11 - object creation of Cat
+    //Call to CatManager.getType()
     public static final CatType getType(String typeName){
         return instance.getTypeFromName(typeName);
     }
@@ -116,6 +118,8 @@ public class CatManager extends ObjectManager {
         //Postconditions: None
     }
 
+    //Documentation for Homework cw11 - object creation of Cat
+    //Base call to CatManager.createCat() => call to CatManager.getType() => call to CatType.createInstance()
     public Cat createCat(String typeName){
         if(!hasType(typeName))return null;
         CatType type = getType(typeName);

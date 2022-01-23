@@ -81,6 +81,8 @@ public class CatPhotoManager extends PhotoManager{
         return CatPhotoFactory.getInstance().createPhoto(rset);
     }
 
+    //Documentation for Homework cw11 - object creation of CatPhoto
+    //Base call to CatPhotoManager.createPhoto() => call to PhotoUtil.createCatPhoto()
     @Override
     public CatPhoto createPhoto(File file) throws Exception {
         //Preconditions: The argument file is not null, this is checked in PhotoUtil.createCatPhoto

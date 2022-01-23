@@ -20,6 +20,8 @@ public class CatType {
         CatManager.getInstance().addType(this);
     }
 
+    //Documentation for Homework cw11 - object creation of Cat
+    //Call to CatType.createInstance() => call to Cat()
     public Cat createInstance(){
         return new Cat(this);
     }

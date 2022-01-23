@@ -52,6 +52,8 @@ public class CatPhotoFactory extends PhotoFactory{
         //Postconditions: None
     }
 
+    //Documentation for Homework cw11 - object creation of CatPhoto
+    //Call to CatPhotoFactory.createPhoto() => call to CatPhoto()
     @Override
     public CatPhoto createPhoto(PhotoId id) {
         //Preconditions: None

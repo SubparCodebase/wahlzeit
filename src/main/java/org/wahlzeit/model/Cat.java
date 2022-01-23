@@ -12,6 +12,8 @@ public class Cat {
     //Length in cm
     protected float length;
 
+    //Documentation for Homework cw11 - object creation of Cat
+    //Call to Cat()
     public Cat(CatType ct){
         type = ct;
         id = CatId.getNextId();

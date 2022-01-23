@@ -109,6 +109,8 @@ public class Photo extends DataObject {
 	/**
 	 * 
 	 */
+	//Documentation for Homework cw11 - object creation of CatPhoto
+	//Call to Photo()
 	public Photo() {
 		//Preconditions: None
 		id = PhotoId.getNextId();

@@ -19,6 +19,8 @@ public class CatPhoto extends Photo{
 
     protected Cat depictedCat;
 
+    //Documentation for Homework cw11 - object creation of CatPhoto
+    //Call to CatPhoto() => call to Photo()
     public CatPhoto() {
         //Preconditions: None
         super();

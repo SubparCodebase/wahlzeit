@@ -36,6 +36,8 @@ public class PhotoUtil {
 		return result;
 	}
 
+	//Documentation for Homework cw11 - object creation of CatPhoto
+	//Call to PhotoUtil.createCatPhoto() => call to CatPhotoFactory.createPhoto()
 	public static CatPhoto createCatPhoto(File source, PhotoId id) throws Exception {
 		//Preconditions: The arguments are not null
 		ContractEnforcerUtil.assertArgumentNonNull(source, id);
