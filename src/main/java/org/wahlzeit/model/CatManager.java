@@ -13,6 +13,7 @@ import java.util.*;
 
 public class CatManager extends ObjectManager {
 
+    //Manager-Collaboration with Cat; Bound role: Manager
     protected static final CatManager instance = new CatManager();
 
     protected Map<CatId, Cat> catCache = new HashMap<CatId, Cat>();

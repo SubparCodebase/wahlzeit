@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 public class CatType {
 
+    //Type-Object-Collaboration with Cat; Bound role: Type Object
     protected String name;
     protected CatType superType = null;
     protected LinkedList<CatType> subTypes = new LinkedList<CatType>();
@@ -30,6 +31,7 @@ public class CatType {
         return name;
     }
 
+    //Parent-Child-Collaboration with itself; Bound roles: Parent, Child (respectively)
     public CatType getSuperType() {
         return superType;
     }

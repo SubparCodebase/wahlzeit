@@ -4,6 +4,9 @@ import java.util.Date;
 
 public class Cat {
 
+    //Client-Service-Collaboration with CatPhoto; Bound role: Service
+    //Type-Object-Collaboration with CatType; Bound role: Base Object
+    //Manager-Collaboration with CatManager; Bound role: Element
     //final since a cat should not change type (hopefully)
     protected final CatType type;
     protected CatId id = null;

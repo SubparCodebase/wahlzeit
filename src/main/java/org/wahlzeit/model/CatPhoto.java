@@ -17,6 +17,7 @@ import java.sql.SQLException;
 )
 public class CatPhoto extends Photo{
 
+    //Client-Service-Collaboration with Cat; Bound role: Client
     protected Cat depictedCat;
 
     //Documentation for Homework cw11 - object creation of CatPhoto
